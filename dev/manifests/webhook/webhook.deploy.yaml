@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: simple-kubernetes-webhook
+  name: simple-kubernetes-webhook
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-kubernetes-webhook
+  template:
+    metadata:
+      labels:
+        app: simple-kubernetes-webhook
+    spec:
+      tolerations:
+        - key: acme.com/lifespan-remaining
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - image: asia.gcr.io/helical-realm-307202/simple-kubernetes-webhook:latest
+          imagePullPolicy: Always
+          name: simple-kubernetes-webhook
+          env:
+            - name: TLS
+              value: "false"
+            - name: LOG_LEVEL
+              value: "trace"
+            - name: LOG_JSON
+              value: "false"
+          volumeMounts:
+            - name: tls
+              mountPath: "/etc/admission-webhook/tls"
+              readOnly: true
+      volumes:
+        - name: tls
+          secret:
+            secretName: simple-kubernetes-webhook-tls
