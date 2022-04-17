@@ -65,35 +65,6 @@ Error from server: error when creating "dev/manifests/pods/bad-name.pod.yaml": a
 ```
 You should see in the admission webhook logs that the pod validation failed. It's possible you will also see that the pod was mutated, as webhook configurations are not ordered.
 
-## Testing
-Unit tests can be run with the following command:
-```
-$ make test
-go test ./...
-?   	github.com/slackhq/simple-kubernetes-webhook	[no test files]
-ok  	github.com/slackhq/simple-kubernetes-webhook/pkg/admission	0.611s
-ok  	github.com/slackhq/simple-kubernetes-webhook/pkg/mutation	1.064s
-ok  	github.com/slackhq/simple-kubernetes-webhook/pkg/validation	0.749s
-```
-
-## Admission Logic
-A set of validations and mutations are implemented in an extensible framework. Those happen on the fly when a pod is deployed and no further resources are tracked and updated (ie. no controller logic).
-
-### Validating Webhooks
-#### Implemented
-- [name validation](pkg/validation/name_validator.go): validates that a pod name doesn't contain any offensive string
-
-#### How to add a new pod validation
-To add a new pod mutation, create a file `pkg/validation/MUTATION_NAME.go`, then create a new struct implementing the `validation.podValidator` interface.
-
-### Mutating Webhooks
-#### Implemented
-- [inject env](pkg/mutation/inject_env.go): inject environment variables into the pod such as `KUBE: true`
-- [minimum pod lifespan](pkg/mutation/minimum_lifespan.go): inject a set of tolerations used to match pods to nodes of a certain age, the tolerations injected are controlled via the `acme.com/lifespan-requested` pod label.
-
-#### How to add a new pod mutation
-To add a new pod mutation, create a file `pkg/mutation/MUTATION_NAME.go`, then create a new struct implementing the `mutation.podMutator` interface.
-
 #### reference
 - [admission webhook server](https://github.com/kubernetes/kubernetes/blob/release-1.21/test/images/agnhost/webhook/main.go)
 - [admission webhook service](https://github.com/kubernetes/kubernetes/blob/v1.22.0/test/e2e/apimachinery/webhook.go#L748)
