@@ -1,5 +1,5 @@
-GOOGLE_CLOUD_PROJECT=helical-realm-307202
-REGISTRY=asia.gcr.io
+GOOGLE_CLOUD_PROJECT=<GOOGLE CLOUD PROJECT ID>
+REGISTRY=<REGISTRY>
 FOLDER=simple-kubernetes-webhook
 TAG=latest
 IMAGE=$(REGISTRY)/$(GOOGLE_CLOUD_PROJECT)/$(FOLDER):$(TAG)
@@ -83,11 +83,6 @@ delete-bad-pod:
 	kubectl delete -f dev/manifests/pods/bad-name.pod.yaml
 
 # others
-.PHONY: taint
-taint:
-	@echo "\n🎨 Taining Kubernetes node.."
-	kubectl taint nodes kind-control-plane "acme.com/lifespan-remaining"=4:NoSchedule
-
 .PHONY: logs
 logs:
 	@echo "\n🔍 Streaming simple-kubernetes-webhook logs..."

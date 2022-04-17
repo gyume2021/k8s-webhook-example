@@ -15,7 +15,7 @@ webhooks:
         scope: "*"
     clientConfig:
       service:
-        namespace: simple-webhook  # default
+        namespace: simple-webhook
         name: simple-kubernetes-webhook
         path: /validate-pods
         port: 443
